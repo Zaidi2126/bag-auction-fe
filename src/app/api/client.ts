@@ -1,5 +1,5 @@
 /**
- * API client for Be backend. Base URL: VITE_API_URL or http://127.0.0.1:8000
+ * API client for Be backend. Base URL: VITE_API_URL or https://bag-auction-be.vercel.app
  */
 
 import type {
@@ -11,7 +11,7 @@ import type {
   ApiErrorDetail,
 } from "./types";
 
-const BASE_URL = import.meta.env.VITE_API_URL ?? "http://127.0.0.1:8000";
+const BASE_URL = import.meta.env.VITE_API_URL ?? "https://bag-auction-be.vercel.app";
 
 function getAuthHeaders(token: string | null): HeadersInit {
   const headers: HeadersInit = { "Content-Type": "application/json" };

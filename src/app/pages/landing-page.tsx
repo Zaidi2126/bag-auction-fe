@@ -99,7 +99,7 @@ export function LandingPage() {
                   Ultra Premium Collection
                 </span>
               </div>
-              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight text-white drop-shadow-lg [text-shadow:0_2px_20px_rgba(0,0,0,0.5)]">
+              <h1 className="text-5xl sm:text-6xl md:text-7xl lg:text-8xl font-bold leading-tight text-white drop-shadow-lg [text-shadow:0_2px_20px_rgba(0,0,0,0.5)] inline-block px-4 py-3 sm:px-6 sm:py-4 rounded-lg bg-black/50">
                 The Most Important
                 <br />
                 <span className="text-primary">Men's Clutch</span> You Will

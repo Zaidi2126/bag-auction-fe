@@ -282,7 +282,7 @@ export function AuctionPage() {
                   ) : (
                     "Be the first to bid"
                   )}
-                </span>
+                      </span>
                 <div className="font-bold">{currentBid} AED</div>
               </div>
             </div>
@@ -290,18 +290,18 @@ export function AuctionPage() {
 
           <div className="space-y-6">
             {token && (
-              <div
-                className={`border-2 rounded-lg p-6 ${
+            <div
+              className={`border-2 rounded-lg p-6 ${
                   isWinning ? "bg-primary/10 border-primary" : "bg-card border-border"
-                }`}
-              >
-                <div className="flex items-center gap-2 mb-3">
+              }`}
+            >
+              <div className="flex items-center gap-2 mb-3">
                   {isWinning ? <Sparkles className="w-5 h-5 text-primary" /> : <TrendingUp className="w-5 h-5 text-muted-foreground" />}
-                  <h3 className="font-bold">Your Status</h3>
-                </div>
-                <div className="space-y-2">
-                  <div className="text-2xl font-bold">
-                    {isWinning ? (
+                <h3 className="font-bold">Your Status</h3>
+              </div>
+              <div className="space-y-2">
+                <div className="text-2xl font-bold">
+                  {isWinning ? (
                       <span className="text-primary">You&apos;re winning</span>
                     ) : (
                       <span className="text-muted-foreground">Your bids</span>
@@ -313,8 +313,8 @@ export function AuctionPage() {
                     </div>
                   )}
                 </div>
-              </div>
-            )}
+                  </div>
+                )}
 
             {!token && (
               <div className="bg-muted/50 border border-border rounded-lg p-6 text-center">
@@ -324,29 +324,29 @@ export function AuctionPage() {
             )}
 
             {token && (
-              <div className="bg-card border border-border rounded-lg p-6">
-                <h3 className="text-xl font-bold mb-4">Place Your Bid</h3>
+            <div className="bg-card border border-border rounded-lg p-6">
+              <h3 className="text-xl font-bold mb-4">Place Your Bid</h3>
                 {bidError && (
                   <div className="mb-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-destructive text-sm">
                     {bidError}
                   </div>
                 )}
-                <div className="space-y-3">
+              <div className="space-y-3">
                   {BID_INCREMENTS.map((inc) => (
-                    <button
+                  <button
                       key={inc}
                       onClick={() => handleBid(inc)}
                       disabled={!canBid || bidLoading}
-                      className={`w-full py-4 rounded-lg font-bold text-lg transition-all ${
+                    className={`w-full py-4 rounded-lg font-bold text-lg transition-all ${
                         !canBid || bidLoading
-                          ? "bg-secondary text-muted-foreground cursor-not-allowed"
-                          : "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 shadow-lg shadow-primary/20"
-                      }`}
-                    >
+                        ? "bg-secondary text-muted-foreground cursor-not-allowed"
+                        : "bg-primary text-primary-foreground hover:bg-primary/90 hover:scale-105 shadow-lg shadow-primary/20"
+                    }`}
+                  >
                       +{inc} AED
-                    </button>
-                  ))}
-                </div>
+                  </button>
+                ))}
+              </div>
 
                 {me?.is_highest_bidder && (
                   <div className="mt-4 p-3 bg-primary/10 border border-primary/30 rounded-lg text-center">
@@ -354,14 +354,14 @@ export function AuctionPage() {
                   </div>
                 )}
                 {cooldownRemaining > 0 && !me?.is_highest_bidder && (
-                  <div className="mt-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-center">
-                    <p className="text-sm text-destructive">
+                <div className="mt-4 p-3 bg-destructive/10 border border-destructive/30 rounded-lg text-center">
+                  <p className="text-sm text-destructive">
                       You can bid again in {Math.ceil(cooldownRemaining)}s
-                    </p>
-                  </div>
-                )}
+                  </p>
+                </div>
+              )}
 
-                <div className="mt-6 pt-6 border-t border-border text-center">
+              <div className="mt-6 pt-6 border-t border-border text-center">
                   <div className="text-sm text-muted-foreground">Next bid from</div>
                   <div className="text-3xl font-bold text-primary mt-1">{currentBid + 5} AED</div>
                 </div>
