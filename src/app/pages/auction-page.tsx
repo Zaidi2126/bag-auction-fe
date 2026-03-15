@@ -24,6 +24,7 @@ export function AuctionPage() {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const countdownToStart = useCountdownToStart();
   const isBeforeStart = !countdownToStart.isStarted;
+  const auctionStarted = countdownToStart.isStarted;
 
   const [state, setState] = useState<AuctionState | null>(null);
   const [me, setMe] = useState<AuctionMeResponse | null>(null);
@@ -57,21 +58,22 @@ export function AuctionPage() {
   }, [token, logout, navigate]);
 
   useEffect(() => {
+    if (!auctionStarted) return;
     fetchState();
     fetchMe();
-  }, [fetchState, fetchMe]);
+  }, [auctionStarted, fetchState, fetchMe]);
 
   useEffect(() => {
-    if (!state || state.status === "ended") return;
+    if (!auctionStarted || !state || state.status === "ended") return;
     const id = setInterval(fetchState, POLL_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [state?.status, fetchState]);
+  }, [auctionStarted, state?.status, fetchState]);
 
   useEffect(() => {
-    if (!token) return;
+    if (!auctionStarted || !token) return;
     const id = setInterval(fetchMe, POLL_INTERVAL_MS);
     return () => clearInterval(id);
-  }, [token, fetchMe]);
+  }, [auctionStarted, token, fetchMe]);
 
   const handleBid = async (increment: number) => {
     if (!token) return;
