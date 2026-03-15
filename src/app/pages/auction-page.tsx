@@ -15,7 +15,7 @@ const BAG_IMAGES = [
   "/bag/bag-6.png",
 ];
 
-const POLL_INTERVAL_MS = 3000;
+const POLL_INTERVAL_MS = 5000;
 const BID_INCREMENTS = [5, 10, 15, 20, 50];
 
 export function AuctionPage() {
