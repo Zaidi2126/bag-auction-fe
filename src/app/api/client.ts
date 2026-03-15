@@ -83,3 +83,4 @@ export async function getAuctionMe(token: string): Promise<AuctionMeResponse> {
   });
   return handleResponse<AuctionMeResponse>(res);
 }
+

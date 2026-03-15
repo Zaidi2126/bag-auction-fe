@@ -4,6 +4,7 @@ import { Sparkles, Shield, Package, Timer, Mail } from "lucide-react";
 import { requestOtp, verifyOtp } from "../api/client";
 import { useAuth } from "../auth-context";
 import { BackgroundSlideshow } from "../components/BackgroundSlideshow";
+import { useCountdownToStart, AUCTION_START_LABEL } from "../auction-countdown";
 
 const BAG_IMAGES = [
   "/bag/bag-1.png",
@@ -22,9 +23,10 @@ export function LandingPage() {
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const countdown = useCountdownToStart();
 
   const handleEnterAuction = () => {
-    navigate("/auction");
+    document.getElementById("login")?.scrollIntoView({ behavior: "smooth" });
   };
 
   const handleRequestOTP = async (e: React.FormEvent) => {
@@ -115,6 +117,33 @@ export function LandingPage() {
               >
                 Enter the Auction
               </button>
+
+              {/* Auction start countdown */}
+              <div className="mt-12 pt-8 border-t border-white/20 w-full max-w-xl mx-auto">
+                <p className="text-white/90 text-sm mb-2">Auction starts {AUCTION_START_LABEL}</p>
+                {countdown.isStarted ? (
+                  <p className="text-primary font-bold text-xl">Auction is live!</p>
+                ) : (
+                  <div className="flex justify-center gap-3 sm:gap-4 flex-wrap">
+                    <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 min-w-[4rem] text-center">
+                      <div className="text-2xl sm:text-3xl font-bold text-white tabular-nums">{countdown.days}</div>
+                      <div className="text-xs text-white/80">days</div>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 min-w-[4rem] text-center">
+                      <div className="text-2xl sm:text-3xl font-bold text-white tabular-nums">{countdown.hours}</div>
+                      <div className="text-xs text-white/80">hours</div>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 min-w-[4rem] text-center">
+                      <div className="text-2xl sm:text-3xl font-bold text-white tabular-nums">{countdown.minutes}</div>
+                      <div className="text-xs text-white/80">min</div>
+                    </div>
+                    <div className="bg-white/10 backdrop-blur rounded-lg px-4 py-2 min-w-[4rem] text-center">
+                      <div className="text-2xl sm:text-3xl font-bold text-white tabular-nums">{countdown.seconds}</div>
+                      <div className="text-xs text-white/80">sec</div>
+                    </div>
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </BackgroundSlideshow>
@@ -287,7 +316,7 @@ export function LandingPage() {
       </section>
 
       {/* Email / OTP Section */}
-      <section className="py-20 px-6 bg-card/50">
+      <section id="login" className="py-20 px-6 bg-card/50">
         <div className="max-w-md mx-auto">
           <div className="text-center mb-8">
             <Mail className="w-12 h-12 text-primary mx-auto mb-4" />
@@ -333,7 +362,7 @@ export function LandingPage() {
                 inputMode="numeric"
                 maxLength={6}
                 value={otp}
-                onChange={(e) => setOtp(e.target.replace(/\D/g, "").slice(0, 6))}
+                onChange={(e) => setOtp(e.target.value.replace(/\D/g, "").slice(0, 6))}
                 placeholder="123456"
                 className="w-full bg-input-background border border-border rounded-lg px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary text-center text-xl tracking-widest"
                 disabled={loading}

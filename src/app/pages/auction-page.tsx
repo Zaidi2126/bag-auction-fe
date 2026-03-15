@@ -4,6 +4,7 @@ import { Trophy, Clock, TrendingUp, Sparkles } from "lucide-react";
 import { getAuctionState, placeBid, getAuctionMe } from "../api/client";
 import { useAuth } from "../auth-context";
 import type { AuctionState, AuctionMeResponse } from "../api/types";
+import { useCountdownToStart, AUCTION_START_LABEL } from "../auction-countdown";
 
 const BAG_IMAGES = [
   "/bag/bag-1.png",
@@ -17,17 +18,12 @@ const BAG_IMAGES = [
 const POLL_INTERVAL_MS = 3000;
 const BID_INCREMENTS = [5, 10, 15, 20, 50];
 
-function maskEmail(email: string) {
-  const [local, domain] = email.split("@");
-  if (!domain) return email;
-  const masked = local.length <= 2 ? local + "***" : local.slice(0, 1) + "***";
-  return `${masked}@${domain}`;
-}
-
 export function AuctionPage() {
   const navigate = useNavigate();
   const { token, logout } = useAuth();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const countdownToStart = useCountdownToStart();
+  const isBeforeStart = !countdownToStart.isStarted;
 
   const [state, setState] = useState<AuctionState | null>(null);
   const [me, setMe] = useState<AuctionMeResponse | null>(null);
@@ -103,6 +99,42 @@ export function AuctionPage() {
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
+  if (isBeforeStart) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-6">
+        <div className="max-w-lg w-full text-center space-y-8">
+          <Clock className="w-20 h-20 text-primary mx-auto" />
+          <h1 className="text-4xl font-bold">Auction Starts Soon</h1>
+          <p className="text-muted-foreground">{AUCTION_START_LABEL}</p>
+          <div className="flex justify-center gap-4 flex-wrap">
+            <div className="bg-card border border-border rounded-lg px-6 py-4 min-w-[5rem]">
+              <div className="text-4xl font-bold text-primary tabular-nums">{countdownToStart.days}</div>
+              <div className="text-sm text-muted-foreground">days</div>
+            </div>
+            <div className="bg-card border border-border rounded-lg px-6 py-4 min-w-[5rem]">
+              <div className="text-4xl font-bold text-primary tabular-nums">{countdownToStart.hours}</div>
+              <div className="text-sm text-muted-foreground">hours</div>
+            </div>
+            <div className="bg-card border border-border rounded-lg px-6 py-4 min-w-[5rem]">
+              <div className="text-4xl font-bold text-primary tabular-nums">{countdownToStart.minutes}</div>
+              <div className="text-sm text-muted-foreground">min</div>
+            </div>
+            <div className="bg-card border border-border rounded-lg px-6 py-4 min-w-[5rem]">
+              <div className="text-4xl font-bold text-primary tabular-nums">{countdownToStart.seconds}</div>
+              <div className="text-sm text-muted-foreground">sec</div>
+            </div>
+          </div>
+          <button
+            onClick={() => navigate("/")}
+            className="bg-primary text-primary-foreground px-6 py-3 rounded-lg hover:bg-primary/90"
+          >
+            Back to Home
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   if (stateError && !state) {
     return (
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center px-6">
@@ -150,7 +182,7 @@ export function AuctionPage() {
           {state.winner && (
             <div className="space-y-4">
               <p className="text-2xl text-muted-foreground">
-                Winner: <span className="text-primary">{maskEmail(state.winner.email)}</span>
+                Winner: <span className="text-primary">{state.winner.email}</span>
               </p>
               <p className="text-xl text-muted-foreground">
                 Final Bid: <span className="text-foreground font-bold">{currentBid} AED</span>
@@ -207,16 +239,6 @@ export function AuctionPage() {
               </div>
             </div>
 
-            <div className="bg-card border-2 border-primary/30 rounded-lg p-6">
-              <h3 className="text-xl font-bold mb-4">Condition</h3>
-              <ul className="space-y-2 text-muted-foreground text-sm">
-                <li><span className="text-primary font-medium">Pre-loved.</span> Held phones, keys, and someone&apos;s dignity. No structural damage.</li>
-                <li><span className="text-primary font-medium">Zippers:</span> Still zipping. We tested. They did not judge.</li>
-                <li><span className="text-primary font-medium">Smell:</span> Leather. The good kind.</li>
-                <li><span className="text-primary font-medium">Vibes:</span> Immaculate. (Snacks not confirmed.)</li>
-              </ul>
-            </div>
-
             <div className="bg-gradient-to-br from-primary/20 to-card border-2 border-primary rounded-lg p-8">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
@@ -230,10 +252,20 @@ export function AuctionPage() {
                   <div className="text-sm text-muted-foreground">Current Highest Bid</div>
                   <div className="text-4xl font-bold">{currentBid} AED</div>
                   <div className="text-sm text-muted-foreground mt-1">
-                    {highestBidderEmail ? `by ${maskEmail(highestBidderEmail)}` : "No bids yet"}
+                    {highestBidderEmail ? `by ${highestBidderEmail}` : "No bids yet"}
                   </div>
                 </div>
               </div>
+            </div>
+
+            <div className="bg-card border-2 border-primary/30 rounded-lg p-6">
+              <h3 className="text-xl font-bold mb-4">Condition</h3>
+              <ul className="space-y-2 text-muted-foreground text-sm">
+                <li><span className="text-primary font-medium">Pre-loved.</span> Held phones, keys, and someone&apos;s dignity. No structural damage.</li>
+                <li><span className="text-primary font-medium">Zippers:</span> Still zipping. We tested. They did not judge.</li>
+                <li><span className="text-primary font-medium">Smell:</span> Leather. The good kind.</li>
+                <li><span className="text-primary font-medium">Vibes:</span> Immaculate. (Snacks not confirmed.)</li>
+              </ul>
             </div>
 
             <div className="bg-card border border-border rounded-lg p-8">
@@ -244,7 +276,7 @@ export function AuctionPage() {
               <div className="flex justify-between items-center py-3 px-4 bg-secondary/50 rounded-lg border border-border">
                 <span className="text-muted-foreground">
                   {highestBidderEmail ? (
-                    <><span className="text-foreground font-medium">{maskEmail(highestBidderEmail)}</span> leads</>
+                    <><span className="text-foreground font-medium">{highestBidderEmail}</span> leads</>
                   ) : (
                     "Be the first to bid"
                   )}
