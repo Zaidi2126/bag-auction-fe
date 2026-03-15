@@ -18,7 +18,7 @@ const FEE_ROOT = path.join(__dirname, "..");
 const BAG_DIR = path.join(FEE_ROOT, "public", "bag");
 
 const TARGET_SIZE = 512;
-const WHITE_THRESHOLD = 245; // pixels with r,g,b all >= this become transparent
+const WHITE_THRESHOLD = 228; // pixels with r,g,b all >= this become transparent (lower = remove more off-white borders)
 const DARK_GREY = { r: 18, g: 18, b: 18 }; // #121212 very dark grey
 
 const BAG_FILES = [
@@ -27,6 +27,7 @@ const BAG_FILES = [
   "bag-3.png",
   "bag-4.png",
   "bag-5.png",
+  "bag-6.png",
 ];
 
 if (!fs.existsSync(BAG_DIR)) {
@@ -59,16 +60,9 @@ async function processImage(fileName) {
     raw: { width, height, channels: 4 },
   });
 
-  const overlayBuffer = await withTransparency.png().toBuffer();
-  const bgBuffer = await sharp({
-    create: { width, height, channels: 3, background: DARK_GREY },
-  })
-    .png()
-    .toBuffer();
-
   const outPath = path.join(BAG_DIR, fileName);
-  await sharp(bgBuffer)
-    .composite([{ input: overlayBuffer, top: 0, left: 0 }])
+  await withTransparency
+    .flatten({ background: DARK_GREY })
     .resize(TARGET_SIZE, TARGET_SIZE, {
       fit: "contain",
       background: DARK_GREY,

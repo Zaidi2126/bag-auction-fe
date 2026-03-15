@@ -193,3 +193,16 @@
     font-family: var(--font-display);
   }
 }
+
+@keyframes slideProgress {
+  to { width: 100%; }
+}
+
+@keyframes kenBurns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.06); }
+}
+
+.animate-ken-burns {
+  animation: kenBurns 8s ease-out forwards;
+}

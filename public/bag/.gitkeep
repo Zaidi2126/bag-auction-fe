@@ -1,2 +1,1 @@
-# Put bag-1.png, bag-2.png, bag-3.png, bag-4.png, bag-5.png here,
-# then run: npm run process-bag-images
+# bag-1.png … bag-6.png (product images). Optional: npm run process-bag-images to normalize.
